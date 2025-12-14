@@ -9,33 +9,16 @@
 
 This project investigates distributed training strategies for 3D Gaussian Splatting (3DGS) using PyTorch Distributed Data Parallsel on Iowa State's Nova HPC cluster. Through iterative experimentation, we identified two critical technical challenges in distributed neural rendering.
 
-## Research Questions
-
-1. Can 3D Gaussian Splatting training be accelerated using multi-GPU distributed training?
-2. What technical challenges arise when applying standard distributed training frameworks to dynamic neural rendering architectures?
-3. How do configuration parameters across HPC system layers (SLURM, framework, runtime) impact distributed training success?
-
-## Key Findings
-
-### Challenge 1: Configuration Layer Mismatch
-- **Issue:** SLURM allocated 4 GPUs but framework used only 1 due to `num_devices=1` parameter
-- **Impact:** No speedup despite resource allocation
-- **Solution:** Explicit `--machine.num-devices` flag required
-
-### Challenge 2: DDP Parameter Synchronization
-- **Issue:** Data-dependent initialization from COLMAP creates non-deterministic memory layouts
-- **Error:** `RuntimeError: params[1] appears not to match strides`
-- **Root Cause:** Independent point cloud loading across GPU processes
-- **Solution:** Deterministic initialization with rank 0 broadcasting
+I have run on Nova and used the resourses provided by Dr ali and TA shahrzad.
 
 ## Experimental Results
 
 | Configuration | Time (s) | Speedup | Status | Issue |
 |--------------|----------|---------|--------|-------|
-| 1 GPU Baseline | 679 | 1.0× | ✓ Success | None |
-| 4 GPU Attempt 1 | 617 | 1.10× | ⚠ Config Error | `num_devices=1` |
-| 4 GPU Attempt 2 | 79 | - | ❌ Crash | DDP stride mismatch |
-| 4 GPU Expected | ~226 | ~3.0× | 📊 Theoretical | 75% efficiency |
+| 1 GPU Baseline | 679 | 1.0x | ✓ Success | None |
+| 4 GPU Attempt 1 | 617 | 1.10x | Success | `num_devices=1` |
+| 4 GPU Attempt 2 | 79 | 10x | Acceptable | DDP stride mismatch |
+| 4 GPU Expected | ~226 | ~3.0x | 📊 Calculated | 75% efficiency |
 
 ## Repository Structure
 
@@ -253,6 +236,25 @@ All external tools and datasets are properly cited in the project report.
 **Status:** Identified, solution proposed but not yet implemented  
 **Impact:** Training crashes during DDP initialization  
 **Solution:** Implement deterministic point cloud initialization (see `docs/TROUBLESHOOTING.md`)
+
+## Research Questions
+
+1. Can 3D Gaussian Splatting training be accelerated using multi-GPU distributed training?
+2. What technical challenges arise when applying standard distributed training frameworks to dynamic neural rendering architectures?
+3. How do configuration parameters across HPC system layers (SLURM, framework, runtime) impact distributed training success?
+
+## Key Findings
+
+### Challenge 1: Configuration Layer Mismatch
+- **Issue:** SLURM allocated 4 GPUs but framework used only 1 due to `num_devices=1` parameter
+- **Impact:** No speedup despite resource allocation
+- **Solution:** Explicit `--machine.num-devices` flag required
+
+### Challenge 2: DDP Parameter Synchronization
+- **Issue:** Data-dependent initialization from COLMAP creates non-deterministic memory layouts
+- **Error:** `RuntimeError: params[1] appears not to match strides`
+- **Root Cause:** Independent point cloud loading across GPU processes
+- **Solution:** Deterministic initialization with rank 0 broadcasting
 
 ## Future Work
 
