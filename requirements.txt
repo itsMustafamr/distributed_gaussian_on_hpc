@@ -1,0 +1,46 @@
+# Python Dependencies for Distributed 3D Gaussian Splatting
+# ===========================================================
+#
+# Install with: pip install -r requirements.txt
+#
+# Note: It's recommended to use the conda environment.yml instead
+# for better reproducibility, especially on HPC systems.
+
+# Core Deep Learning
+torch==2.0.1
+torchvision==0.15.2
+torchaudio==2.0.2
+
+# 3D Gaussian Splatting Framework
+nerfstudio==1.0.2
+gsplat==0.1.11
+
+# Computer Vision and 3D
+opencv-python==4.8.1
+Pillow==10.0.0
+imageio==2.31.5
+trimesh==3.23.5
+
+# Scientific Computing
+numpy==1.24.3
+scipy==1.11.3
+
+# Visualization
+matplotlib==3.7.3
+plotly==5.17.0
+
+# Data Processing
+pandas==2.0.3
+
+# Utilities
+tqdm==4.66.1
+rich==13.5.2
+typer==0.9.0
+pyyaml==6.0.1
+
+# For Development/Analysis (Optional)
+jupyter==1.0.0
+ipython==8.15.0
+
+# HPC-specific (if needed)
+# mpi4py==3.1.4  # Uncomment if using MPI

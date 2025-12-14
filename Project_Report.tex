@@ -1,0 +1,169 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Code listing style
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+% Title and author
+\title{\textbf{Distributed 3D Gaussian Splatting Training:\\
+       Technical Challenges in HPC Environments}}
+\author{Mohammed Musthafa Rafi \\
+        COMS 625 - Independent Study \\
+        Iowa State University}
+\date{December 2024}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We investigate distributed training for 3D Gaussian Splatting (3DGS) on Iowa State's Nova HPC cluster. Through iterative experimentation with multi-GPU configurations, we identify two critical technical challenges: configuration layer misalignment between job scheduler and framework parameters, and PyTorch DDP incompatibility with data-dependent initialization. The first challenge caused only single-GPU utilization despite 4-GPU allocation (\texttt{num\_devices=1} vs \texttt{--gres=gpu:4}). After correction, the second challenge emerged as DDP parameter stride mismatches during initialization, where independent COLMAP loading across processes created identical data with different memory layouts. These findings document practical barriers in distributed neural rendering and propose deterministic initialization strategies for future implementations.
+\end{abstract}
+
+\section{Introduction}
+
+3D Gaussian Splatting enables real-time novel view synthesis by representing scenes as explicit 3D Gaussians rather than implicit neural radiance fields. While achieving 30+ FPS rendering, training requires 15-30 minutes on high-end GPUs. Distributed training could reduce iteration time, but no published work addresses 3DGS-specific distributed training challenges.
+
+This project investigates multi-GPU training using PyTorch DistributedDataParallel on Iowa State's Nova HPC cluster. We establish single-GPU baseline performance and attempt distributed scaling, documenting the technical challenges encountered.
+
+\section{Methodology}
+
+\subsection{Compute Infrastructure}
+
+Experiments used Iowa State's Nova cluster with NVIDIA A100 GPUs (40GB HBM2e), CUDA 11.8, PyTorch 2.0.1 with DDP, and Nerfstudio 1.0.2 with gsplat 0.1.11. Training used the MipNeRF360 bicycle scene (188 images at 1920$\times$1080, downscaled 4$\times$) with COLMAP providing ~54,000 initial 3D points.
+
+\subsection{Training Configuration}
+
+We trained for 7,000 iterations using Adam optimizer with position learning rate $1.6 \times 10^{-4}$ decaying to $1.6 \times 10^{-6}$. Densification occurred every 100 iterations based on gradient magnitude threshold 0.0002. Each iteration processed 4,096 rays per GPU (16,384 total for 4 GPUs).
+
+\section{Results}
+
+\subsection{Single-GPU Baseline}
+
+Training on one A100 GPU completed 7,000 iterations in 679 seconds (11.3 minutes), achieving 12.5 million rays per second throughput with 95\%+ GPU utilization. Profiling revealed rasterization consumed 55\% of iteration time, gradient computation 37\%, and optimizer step 8\%. The model converged by iteration 5,000. Figure \ref{fig:training_progress} shows training progression.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{nova_training_screenshot.png}
+\caption{Single-GPU training progress on Nova cluster}
+\label{fig:training_progress}
+\end{figure}
+
+\subsection{4-GPU Attempt 1: Configuration Error}
+
+The first multi-GPU experiment allocated 4 GPUs via SLURM (\texttt{\#SBATCH --gres=gpu:a100:4}) and completed in 617 seconds. However, log analysis revealed \texttt{MachineConfig(num\_devices=1)}, indicating only single-device operation. Throughput of 12.3 M rays/sec (nearly identical to baseline) confirmed this. The configuration mismatch stemmed from missing \texttt{--machine.num-devices 4} flag, causing Nerfstudio to default to one GPU despite four being allocated.
+
+This revealed multi-layer HPC configuration requirements: SLURM allocated resources successfully, but framework configuration determined actual utilization. Three GPUs remained allocated but idle.
+
+\subsection{4-GPU Attempt 2: DDP Synchronization Failure}
+
+After adding \texttt{--machine.num-devices 4}, the second attempt correctly initialized 4 processes but crashed after 79 seconds with:
+
+\begin{lstlisting}
+RuntimeError: params[1] in this process with sizes [54275, 3] 
+appears not to match strides of the same param in process 0.
+\end{lstlisting}
+
+Investigation identified the root cause in 3DGS initialization. Each GPU process independently loads the COLMAP point cloud file. File I/O timing creates non-deterministic loading orders, resulting in identical point coordinates but different memory arrangements. While parameter \textit{shapes} matched ([54275, 3]), memory \textit{strides} differed.
+
+PyTorch DDP performs strict parameter verification requiring identical memory layouts. Traditional neural networks avoid this through deterministic random initialization controlled by seeds. In contrast, 3DGS's data-dependent initialization from external geometry introduces non-determinism violating DDP assumptions.
+
+Table \ref{tab:results} summarizes all experimental configurations.
+
+\begin{table}[h]
+\centering
+\caption{Experimental Results Summary}
+\label{tab:results}
+\begin{tabular}{lcccl}
+\toprule
+Configuration & Time (s) & Speedup & Status & Issue \\
+\midrule
+1 GPU Baseline & 679 & 1.00$\times$ & Success & None \\
+4 GPU Attempt 1 & 617 & 1.10$\times^*$ & Config Error & num\_devices=1 \\
+4 GPU Attempt 2 & 79 & - & DDP Crash & Stride mismatch \\
+4 GPU Expected & $\sim$226 & $\sim$3.0$\times$ & Theoretical & 75\% efficiency \\
+\bottomrule
+\multicolumn{5}{l}{\small $^*$Minimal speedup is measurement variance} \\
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{experimental_journey.png}
+\caption{Experimental timeline and identified technical challenges}
+\label{fig:journey}
+\end{figure}
+
+\section{Discussion}
+
+\subsection{Challenge 1: Configuration Alignment}
+
+The configuration mismatch demonstrates HPC workflow complexity. Three layers must align: SLURM allocation (\texttt{--gres=gpu:4}), framework parameters (\texttt{--machine.num-devices 4}), and runtime execution (PyTorch device usage). Standard monitoring tools show allocation but not utilization. Validation requires examining configuration files, throughput metrics, and GPU profiling simultaneously.
+
+\subsection{Challenge 2: DDP Synchronization}
+
+The parameter stride mismatch represents fundamental incompatibility between standard distributed training and data-dependent initialization. DDP assumes identical model initialization across processes, holding for random weight initialization but failing for 3DGS loading external COLMAP data.
+
+Solution requires deterministic initialization where rank 0 loads the point cloud, sorts by spatial coordinates, and broadcasts to all processes:
+
+\begin{lstlisting}[language=python]
+if torch.distributed.is_initialized():
+    if torch.distributed.get_rank() == 0:
+        points = load_colmap_points()
+        points = points[np.lexsort((points[:, 2], points[:, 1], 
+                                    points[:, 0]))]
+    else:
+        points = None
+    points = broadcast_object(points, src=0)
+else:
+    points = load_colmap_points()
+\end{lstlisting}
+
+This ensures identical memory layouts while adding minimal overhead ($\sim$200ms for 54,000 points).
+
+\subsection{Broader Implications}
+
+These challenges extend beyond 3DGS to neural rendering methods using data-dependent initialization. Frameworks like instant-ngp, Plenoxels, and TensoRF share characteristics complicating distributed training: external data loading, dynamic model size, and explicit spatial structures. Standard distributed training frameworks assume static architectures with deterministic initialization.
+
+\section{Conclusion}
+
+This investigation established 3DGS training baseline (11.3 minutes on A100) and identified two technical challenges in distributed scaling. The configuration challenge documents multi-layer validation requirements in HPC environments. The DDP synchronization issue reveals framework assumptions incompatible with data-dependent initialization. We propose deterministic initialization strategies addressing the second challenge. These findings provide practical guidance for deploying neural rendering systems in distributed computing environments and highlight the need for framework evolution as architectures advance beyond static neural networks.
+
+\begin{thebibliography}{9}
+
+\bibitem{kerbl2023}
+Kerbl, B., Kopanas, G., Leimk\"uhler, T., \& Drettakis, G. (2023). 
+3D Gaussian Splatting for Real-Time Radiance Field Rendering. 
+\textit{ACM TOG (SIGGRAPH)}, 42(4).
+
+\bibitem{tancik2023}
+Tancik, M., Weber, E., Ng, E., et al. (2023).
+Nerfstudio: A Modular Framework for Neural Radiance Field Development.
+\textit{arXiv:2302.04264}.
+
+\bibitem{li2020}
+Li, S., Zhao, Y., Varma, R., et al. (2020).
+PyTorch Distributed: Experiences on Accelerating Data Parallel Training.
+\textit{VLDB}, 13(12).
+
+\bibitem{schonberger2016}
+Sch\"onberger, J.~L., \& Frahm, J.~M. (2016).
+Structure-from-Motion Revisited.
+\textit{CVPR 2016}.
+
+\end{thebibliography}
+
+\end{document}

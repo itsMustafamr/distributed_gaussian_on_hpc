@@ -1,0 +1,89 @@
+# Conda Environment for Distributed 3D Gaussian Splatting
+# =========================================================
+#
+# Create environment with: conda env create -f environment.yml
+# Activate with: conda activate dist3dgs
+#
+# Author: Mohammed Musthafa Rafi
+# Date: December 2024
+
+name: dist3dgs
+
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Python version
+  - python=3.10
+
+  # CUDA and PyTorch (CUDA 11.8 compatible)
+  - pytorch=2.0.1
+  - torchvision=0.15.2
+  - torchaudio=2.0.2
+  - pytorch-cuda=11.8
+  - cudatoolkit=11.8
+
+  # Scientific Computing
+  - numpy=1.24.3
+  - scipy=1.11.3
+  - pandas=2.0.3
+
+  # Visualization
+  - matplotlib=3.7.3
+  - plotly=5.17.0
+
+  # Image Processing
+  - opencv=4.8.1
+  - pillow=10.0.0
+  - imageio=2.31.5
+
+  # Development Tools
+  - jupyter
+  - ipython
+
+  # Utilities
+  - tqdm
+  - pyyaml
+
+  # Install via pip (not available in conda)
+  - pip
+  - pip:
+    - nerfstudio==1.0.2
+    - gsplat==0.1.11
+    - rich==13.5.2
+    - typer==0.9.0
+    - trimesh==3.23.5
+
+# ============================================================================
+# Installation Notes
+# ============================================================================
+#
+# 1. CUDA Version:
+#    This environment is configured for CUDA 11.8, which is available
+#    on Iowa State's Nova cluster. If using a different system, adjust
+#    pytorch-cuda and cudatoolkit versions accordingly.
+#
+# 2. Nerfstudio Installation:
+#    Nerfstudio is installed via pip because it's not available in conda.
+#    This is the official installation method recommended by the
+#    Nerfstudio team.
+#
+# 3. gsplat Backend:
+#    gsplat provides optimized CUDA kernels for Gaussian splatting
+#    rasterization. It must be compiled for your specific CUDA version.
+#
+# 4. HPC Considerations:
+#    On HPC systems, you may need to load CUDA modules before creating
+#    the environment:
+#      module load cuda/11.8
+#      conda env create -f environment.yml
+#
+# 5. Verification:
+#    After installation, verify with:
+#      conda activate dist3dgs
+#      python scripts/verify_setup.py
+#
+# ============================================================================

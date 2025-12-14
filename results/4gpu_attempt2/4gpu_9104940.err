@@ -1,0 +1,82 @@
+Lmod has detected the following error: The following module(s) are unknown:
+"gcc/11.2.0"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "gcc/11.2.0"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:32: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float32)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:39: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, g):
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:32: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float32)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:39: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, g):
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:32: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float32)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:39: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, g):
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/engine/trainer.py:137: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.grad_scaler = GradScaler(enabled=self.use_grad_scaler)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:32: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float32)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:39: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, g):
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:32: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float32)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/field_components/activations.py:39: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  def backward(ctx, g):
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/engine/trainer.py:137: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.grad_scaler = GradScaler(enabled=self.use_grad_scaler)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/engine/trainer.py:137: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.grad_scaler = GradScaler(enabled=self.use_grad_scaler)
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/engine/trainer.py:137: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self.grad_scaler = GradScaler(enabled=self.use_grad_scaler)
+  0%|          | 0.00/233M [00:00<?, ?B/s]  0%|          | 0.00/233M [00:00<?, ?B/s]  0%|          | 0.00/233M [00:00<?, ?B/s]  0%|          | 0.00/233M [00:00<?, ?B/s] 11%|█         | 25.1M/233M [00:00<00:00, 263MB/s]  2%|▏         | 5.00M/233M [00:00<00:04, 51.8MB/s]  3%|▎         | 6.12M/233M [00:00<00:03, 64.2MB/s]  2%|▏         | 5.12M/233M [00:00<00:04, 52.4MB/s] 25%|██▍       | 57.1M/233M [00:00<00:00, 306MB/s]  4%|▍         | 10.0M/233M [00:00<00:04, 51.9MB/s]  4%|▍         | 10.4M/233M [00:00<00:04, 53.7MB/s]  5%|▌         | 12.2M/233M [00:00<00:03, 59.7MB/s] 40%|███▉      | 93.0M/233M [00:00<00:00, 338MB/s] 18%|█▊        | 42.0M/233M [00:00<00:01, 180MB/s]  13%|█▎        | 30.0M/233M [00:00<00:01, 122MB/s]  18%|█▊        | 41.5M/233M [00:00<00:01, 168MB/s]  35%|███▍      | 81.0M/233M [00:00<00:00, 270MB/s] 21%|██▏       | 49.9M/233M [00:00<00:01, 156MB/s] 54%|█████▎    | 125M/233M [00:00<00:00, 322MB/s]  28%|██▊       | 65.8M/233M [00:00<00:00, 201MB/s] 49%|████▉     | 115M/233M [00:00<00:00, 299MB/s]  35%|███▍      | 80.5M/233M [00:00<00:00, 215MB/s] 41%|████      | 95.2M/233M [00:00<00:00, 239MB/s] 67%|██████▋   | 156M/233M [00:00<00:00, 267MB/s] 63%|██████▎   | 147M/233M [00:00<00:00, 313MB/s] 52%|█████▏    | 120M/233M [00:00<00:00, 283MB/s]  55%|█████▍    | 128M/233M [00:00<00:00, 264MB/s]  78%|███████▊  | 183M/233M [00:00<00:00, 263MB/s] 78%|███████▊  | 182M/233M [00:00<00:00, 328MB/s] 68%|██████▊   | 157M/233M [00:00<00:00, 318MB/s] 68%|██████▊   | 157M/233M [00:00<00:00, 277MB/s] 93%|█████████▎| 218M/233M [00:00<00:00, 292MB/s] 81%|████████  | 188M/233M [00:00<00:00, 316MB/s] 91%|█████████▏| 213M/233M [00:00<00:00, 311MB/s]100%|██████████| 233M/233M [00:00<00:00, 296MB/s]
+ 82%|████████▏ | 192M/233M [00:00<00:00, 302MB/s] 94%|█████████▎| 218M/233M [00:00<00:00, 312MB/s]100%|██████████| 233M/233M [00:00<00:00, 268MB/s]
+ 95%|█████████▍| 221M/233M [00:00<00:00, 282MB/s]100%|██████████| 233M/233M [00:00<00:00, 254MB/s]
+100%|██████████| 233M/233M [00:00<00:00, 248MB/s]
+W1212 19:00:22.560000 579664 torch/multiprocessing/spawn.py:169] Terminating process 579851 via signal SIGTERM
+W1212 19:00:22.562000 579664 torch/multiprocessing/spawn.py:169] Terminating process 579853 via signal SIGTERM
+W1212 19:00:22.562000 579664 torch/multiprocessing/spawn.py:169] Terminating process 579854 via signal SIGTERM
+Traceback (most recent call last):
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/bin/ns-train", line 7, in <module>
+    sys.exit(entrypoint())
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/scripts/train.py", line 262, in entrypoint
+    main(
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/scripts/train.py", line 247, in main
+    launch(
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/scripts/train.py", line 214, in launch
+    process_context.join()
+  File "/home/mohd7/.local/lib/python3.10/site-packages/torch/multiprocessing/spawn.py", line 215, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/mohd7/.local/lib/python3.10/site-packages/torch/multiprocessing/spawn.py", line 90, in _wrap
+    fn(i, *args)
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/scripts/train.py", line 154, in _distributed_worker
+    output = main_func(local_rank, world_size, config, global_rank)
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/scripts/train.py", line 99, in train_loop
+    trainer.setup()
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/engine/trainer.py", line 158, in setup
+    self.pipeline = self.config.pipeline.setup(
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/configs/base_config.py", line 53, in setup
+    return self._target(self, **kwargs)
+  File "/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/site-packages/nerfstudio/pipelines/base_pipeline.py", line 282, in __init__
+    self._model = typing.cast(Model, DDP(self._model, device_ids=[local_rank], find_unused_parameters=True))
+  File "/home/mohd7/.local/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 835, in __init__
+    _verify_param_shape_across_processes(self.process_group, parameters)
+  File "/home/mohd7/.local/lib/python3.10/site-packages/torch/distributed/utils.py", line 282, in _verify_param_shape_across_processes
+    return dist._verify_params_across_processes(process_group, tensors, logger)
+RuntimeError: params[1] in this process with sizes [54275, 3] appears not to match strides of the same param in process 0.
+
+/work/mech-ai-scratch/mohd7/minconda3/envs/dist3dgs/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
